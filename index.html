@@ -11,18 +11,106 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+
     <title>Voice Assistant</title>
 </head>
 <body>
 
-    <p id="samantha-processing">Press the button to activate me</p>
+    <section class="left-stats">
+
+        <h1>Samantha AI 2.0.0</h1>
+
+        <div class="stats-item">
+
+            <p>Knowledge Learned</p>
+
+            <div class="progress-outer">
+                <div class="progress-inner" id="pi1"></div>
+            </div>
+
+        </div>
+
+        <div class="stats-item">
+
+            <p>Internet Scanned</p>
+
+            <div class="progress-outer">
+                <div class="progress-inner" id="pi2"></div>
+            </div>
+
+        </div>
+
+        <div class="stats-item">
+
+            <p>Security Keys Found</p>
+
+            <div class="progress-outer">
+                <div class="progress-inner" id="pi3"></div>
+            </div>
+
+        </div>
+
+        <div class="stats-item">
+
+            <p>Data Mined</p>
+
+            <div class="progress-outer">
+                <div class="progress-inner" id="pi4"></div>
+            </div>
+
+        </div>
+
+        <div class="stats-item">
+
+            <p>Tasks Completed</p>
+
+            <div class="progress-outer">
+                <div class="progress-inner" id="pi5"></div>
+            </div>
+
+        </div>
+
+        <div class="overall-progress">
+
+            <p>Overall Progress</p>
+    
+            <div class="overall-outer">
+                <div class="progress-inner" id="oi"></div>
+            </div>
+    
+        </div>
+
+    </section>
+
+    <section class="right-stats">
+
+        <div class="code-container" id="code-container">
+
+            <code id="code"></code>
+
+        </div>
+
+        <h2>Created by Tanner Kopel</h2>
+        <a href="https://tannerdev.netlify.app/" target="_blank">https://tannerdev.netlify.app</a>
+
+    </section>
+
+    <p id="samantha-processing"></p>
 
     <div id="samantha-visual"></div>
 
-    <div id="samantha-result">Hello Tanner</div>
+    <div id="samantha-result">Hello Tanner! How can I help you today?</div>
+
+    <button id="emergency-stop">
+        <img src="https://img.icons8.com/external-those-icons-fill-those-icons/96/FFFFFF/external-stop-music-audio-those-icons-fill-those-icons.png"/>
+    </button>
 
     <button id="samantha-button">
-        <img class="mic-img" src="https://img.icons8.com/ios-filled/100/000000/microphone--v1.png" />           
+        <img class="mic-img" src="https://img.icons8.com/ios-filled/100/FFFFFF/microphone--v1.png" />           
     </button>
 
     <script src="circular-audio-wave.min.js"></script>

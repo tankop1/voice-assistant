@@ -23,14 +23,15 @@ body {
 #samantha-button {
     width: 75px;
     height: 75px;
-    background-color: #cecece;
+    background: rgb(63,81,181);
+    background: linear-gradient(90deg, rgba(63,81,181,1) 0%, rgba(233,30,99,1) 100%);
     border-radius: 50%;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 300ms;
+    transition: filter 300ms;
     position: absolute;
     right: 50px;
     bottom: 50px;
@@ -38,16 +39,27 @@ body {
 }
 
 #samantha-button:hover {
-    background-color: #f0f0f0;
+    filter: brightness(1.2);
+}
+
+#emergency-stop {
+    position: absolute;
+    right: 125px;
+    bottom: 37px;
+    border-radius: 50%;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transform: scale(0.4);
 }
 
 #samantha-result {
     text-align: center;
     width: 70%;
     position: absolute;
-    bottom: 10%;
+    bottom: 70px;
     left: 15%;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
 }
 
 #samantha-processing {
@@ -64,4 +76,119 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* LEFT STATS */
+
+.left-stats {
+    position: absolute;
+    left: 75px;
+    top: 10%;
+    height: 65%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.left-stats h1 {
+    font-size: 2.5rem;
+    margin-bottom: 35px;
+}
+
+.stats-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.progress-outer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    width: 300px;
+    height: 10px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.progress-inner {
+    height: 100%;
+    background: rgb(63,81,181);
+    background: linear-gradient(90deg, rgba(63,81,181,1) 0%, rgba(233,30,99,1) 100%);
+    transition: width 1000ms;
+}
+
+#pi1 {
+    width: 65%;
+}
+
+#pi2 {
+    width: 45%;
+}
+
+#pi3 {
+    width: 55%;
+}
+
+#pi4 {
+    width: 70%;
+}
+
+#pi5 {
+    width: 25%;
+}
+
+#oi {
+    width: 33%;
+}
+
+.overall-progress {
+    margin-top: 50px;
+}
+
+.overall-progress p {
+    font-size: 1.2rem;
+}
+
+.overall-outer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    width: 450px;
+    height: 20px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+/* RIGHT STATS */
+
+.right-stats {
+    position: absolute;
+    right: 75px;
+    top: 10%;
+    height: 65%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.code-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    width: 300px;
+    height: 425px;
+    overflow: hidden;
+    padding: 15px;
+    scroll-behavior: smooth;
+}
+
+a {
+    color: white;
+    margin-top: -50px;
+    z-index: 6;
 }

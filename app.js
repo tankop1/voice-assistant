@@ -21,7 +21,7 @@ recognition.onresult = event => {
       processing.innerHTML = 'processing ....';
       const response = process(text);
       const p = document.createElement("p");
-      result.innerHTML = `You said: ${text} </br>Samantha said: ${response}`;
+      result.innerHTML = response;
       processing.innerHTML = '';
       speechSynthesis.speak(new SpeechSynthesisUtterance(response));
    }
@@ -35,14 +35,23 @@ let listening = false;
 toggleBtn = () => {
    if (listening) {
       recognition.stop();
-      startBtn.innerHTML = '<img class="mic-img" src="https://img.icons8.com/ios-filled/100/000000/microphone--v1.png" />';
+      startBtn.innerHTML = '<img class="mic-img" src="https://img.icons8.com/ios-filled/100/FFFFFF/microphone--v1.png" />';
    } else {
       recognition.start();
-      startBtn.innerHTML = '<img class="mic-img" src="https://img.icons8.com/ios-filled/100/000000/block-microphone.png"/>';
+      startBtn.innerHTML = '<img class="mic-img" src="https://img.icons8.com/ios-filled/100/FFFFFF/block-microphone.png"/>';
    }
    listening = !listening;
 };
 startBtn.addEventListener("click", toggleBtn);
+
+function playSong(path, title, artist) {
+   wave = new CircularAudioWave(document.getElementById('samantha-visual'));
+   wave.loadAudio(path);
+   setTimeout(() => {
+      wave.play();
+   }, 4000);
+   return `Playing ${title} by ${artist}`;
+}
 
 function process(rawText) {
    // remove space and lowercase text
@@ -54,39 +63,19 @@ function process(rawText) {
 
    if (text.includes('play')) {
       if (text.includes('montero') || text.includes('callmebyyourname')) {
-         wave = new CircularAudioWave(document.getElementById('samantha-visual'));
-         wave.loadAudio('audio/montero.mp3');
-         response = 'Playing Montero by Lil Nas X';
-         setTimeout(() => {
-            wave.play();
-         }, 4000);
+         response = playSong('audio/montero.mp3', 'Montero', 'Lil Nas X');
       }
 
       else if (text.includes('industrybaby')) {
-         wave = new CircularAudioWave(document.getElementById('samantha-visual'));
-         wave.loadAudio('audio/industryBaby.mp3');
-         response = 'Playing Industry Baby by Lil Nas X';
-         setTimeout(() => {
-            wave.play();
-         }, 4000);
+         response = playSong('audio/industryBaby.mp3', 'Industry Baby', 'Lil Nas X');
       }
 
       else if (text.includes('givemeeverything')) {
-         wave = new CircularAudioWave(document.getElementById('samantha-visual'));
-         wave.loadAudio('audio/giveMeEverything.mp3');
-         response = 'Playing Give Me Everything by Pitbull';
-         setTimeout(() => {
-            wave.play();
-         }, 4000);
+         response = playSong('audio/giveMeEverything.mp3', 'Give Me Everything', 'Pitbull');
       }
 
       else if (text.includes('imsosorry') || text.includes('i\'msosorry')) {
-         wave = new CircularAudioWave(document.getElementById('samantha-visual'));
-         wave.loadAudio('audio/imSoSorry.mp3');
-         response = 'Playing Im So Sorry by Imagine Dragons';
-         setTimeout(() => {
-            wave.play();
-         }, 4000);
+         response = playSong('audio/imSoSorry.mp3', 'I\'m So Sorry', 'Imagine Dragons');
       }
 
       else {
@@ -119,6 +108,85 @@ function process(rawText) {
    return response;
 }
 
+// EMERGENCY STOP BUTTON
+
+let emergencyStop = document.getElementById('emergency-stop');
+let progressBars = document.getElementsByClassName('progress-inner');
+let intervalId // FOR startRandomCode FUNCTION AT LINE 187
+
+emergencyStop.onclick = () => {
+   document.getElementById('samantha-visual').style.filter = 'grayscale(100%) brightness(0.8)';
+   clearInterval(intervalId);
+
+   for (let i = 0; i < progressBars.length; i++) {
+      progressBars[i].style.width = '0%';
+   }
+
+   setTimeout(() => {alert('Samantha has been temporarily shutdown. If you would like to reboot her, please reload the page.')}, 1000);
+}
+
 // AUDIO VISUALIZER
 let wave = new CircularAudioWave(document.getElementById('samantha-visual'));
 wave.loadAudio('audio/industryBaby.mp3');
+
+// ANIMATE CODE
+let codeElement = document.getElementById('code');
+let codeParent = document.getElementById('code-container');
+
+function getCode() {
+   let randomCode = [
+      `let samanthaOn = true`,
+      `const samanthaSerialNumber = 923488293`,
+      `function getSamanthaVersion() {
+         return '2.0.0';
+      }`,
+      `const samanthaFunctionality = () => {
+         // EXECUTE HELPER FUNCTION
+         samanthaHelper();
+      }`,
+      `const samanthaActivation = e => {
+         e.target.value = 'activated';
+      }`,
+      `for (let i = 0; i < skills.length; i++) {
+         samantha.skills.push(skills[i]);
+      }`,
+      `class Samantha:
+         constructor(version, skills) {
+            this.version = version
+            this.skills = skills
+         }`,
+      `let samantha = Samantha('2.0.0', []);`,
+      `console.log(samantha.version);`,
+      `for (greeting in greetings) {
+         console.log(greeting);
+      }`,
+      `if (samantha.active) {
+         activateButton.innerHTML = 'Stop';
+      } else {
+         activateButton.innerHTML = 'Start';
+      }`,
+      `switch (greeting) {
+         case 'Hello':
+            return 'Hello!';
+         case 'How are you':
+            return 'Good, how about you?!';
+         default:
+            return 'Please repeat your greeting';
+      }`,
+      `const weather = {temperature: 80, system: 'celcius', type: 'cloudy'}`,
+      `activateButton.addEventListener('click', samanthaActivation);`
+   ];
+
+   return randomCode[Math.floor(Math.random() * randomCode.length)];
+}
+
+function startRandomCode() {
+   return setInterval(() => {
+      let oldHTML = codeElement.innerHTML;
+      let newHTML = oldHTML + '\n' + getCode();
+      codeElement.innerHTML = newHTML;
+      codeParent.scrollTop = codeParent.scrollHeight;
+   }, 400);
+}
+
+intervalId = startRandomCode();
