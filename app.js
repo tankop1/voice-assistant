@@ -71,6 +71,24 @@ function process(rawText) {
          }, 4000);
       }
 
+      else if (text.includes('givemeeverything')) {
+         wave = new CircularAudioWave(document.getElementById('samantha-visual'));
+         wave.loadAudio('audio/giveMeEverything.mp3');
+         response = 'Playing Give Me Everything by Pitbull';
+         setTimeout(() => {
+            wave.play();
+         }, 4000);
+      }
+
+      else if (text.includes('imsosorry') || text.includes('i\'msosorry')) {
+         wave = new CircularAudioWave(document.getElementById('samantha-visual'));
+         wave.loadAudio('audio/imSoSorry.mp3');
+         response = 'Playing Im So Sorry by Imagine Dragons';
+         setTimeout(() => {
+            wave.play();
+         }, 4000);
+      }
+
       else {
          response = 'I could not find the song you were looking for';
       }
