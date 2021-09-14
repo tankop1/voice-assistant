@@ -21,7 +21,7 @@ recognition.onresult = event => {
       processing.innerHTML = 'processing ....';
       const response = process(text);
       const p = document.createElement("p");
-      result.innerHTML = `You said: ${text} </br>Siri said: ${response}`;
+      result.innerHTML = `You said: ${text} </br>Samantha said: ${response}`;
       processing.innerHTML = '';
       speechSynthesis.speak(new SpeechSynthesisUtterance(response));
    }
@@ -76,13 +76,13 @@ function process(rawText) {
       }
    }
 
-   if (text.includes('pause')) {
-      wave.stop();
-      response = 'Music paused';
+   if (text.includes('pause') || text.includes('stopmusic')) {
+      window.location.reload();
+      response = 'Music stopped';
    }
 
    if (text.includes('time')) {
-      response = 'The current time is ' + new Date().toLocaleTimeString().slice(0, 4) + new Date().toLocaleTimeString().slice(8, 10);
+      response = 'The current time is ' + new Date().toLocaleTimeString().slice(0, 5) + new Date().toLocaleTimeString().slice(8, 11);
    }
 
    if (text.includes('search')) {
