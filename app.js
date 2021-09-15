@@ -1,6 +1,7 @@
 const startBtn = document.getElementById('samantha-button');
 const result = document.getElementById('samantha-result');
 const processing = document.getElementById('samantha-processing');
+let alwaysListening = false; // EXERIMENTAL FEATURE
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -20,10 +21,34 @@ recognition.onresult = event => {
    if (res.isFinal) {
       processing.innerHTML = 'processing ....';
       const response = process(text);
-      const p = document.createElement("p");
-      result.innerHTML = response;
       processing.innerHTML = '';
-      speechSynthesis.speak(new SpeechSynthesisUtterance(response));
+      
+      if (typeof response != 'object') {
+         let speech = new SpeechSynthesisUtterance(response);
+         speechSynthesis.speak(speech);
+         result.innerHTML = response;
+         speech.onend = () => {
+            if (alwaysListening) {
+               toggleBtn();
+            }
+         }
+      }
+      
+      else { // THIS WOULD MEAN THE RESPONSE IS A JOKE AND NEEDS A DELAY
+         let speechOne = new SpeechSynthesisUtterance(response[0]);
+         speechSynthesis.speak(speechOne);
+         result.innerHTML = response[0];
+         speechOne.onend = () => {
+            let speechTwo = new SpeechSynthesisUtterance(response[1]);
+            speechSynthesis.speak(speechTwo);
+            result.innerHTML = response[1];
+            speechTwo.onend = () => {
+               if (alwaysListening) {
+                  toggleBtn();
+               }
+            };
+         }
+      }
    }
     
    else {
@@ -32,7 +57,9 @@ recognition.onresult = event => {
 }
 
 let listening = false;
+
 toggleBtn = () => {
+
    if (listening) {
       recognition.stop();
       startBtn.innerHTML = '<img class="mic-img" src="https://img.icons8.com/ios-filled/100/FFFFFF/microphone--v1.png" />';
@@ -40,26 +67,121 @@ toggleBtn = () => {
       recognition.start();
       startBtn.innerHTML = '<img class="mic-img" src="https://img.icons8.com/ios-filled/100/FFFFFF/block-microphone.png"/>';
    }
+
    listening = !listening;
 };
+
 startBtn.addEventListener("click", toggleBtn);
 
+// -----------------------
+// INITIAL SKILL FUNCTIONS
+// -----------------------
+
+// SK I1 - Gets the current date
+function getDate() {
+
+   let currentDate = new Date();
+
+   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'];
+   const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+   const ordinalNumbers = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th', '18th', '19th', '20th', '21st', '22nd', '23rd', '24th', '25th', '26th', '27th', '28th', '29th', '30th', '31st'];
+
+   return `Today is ${weekDays[currentDate.getDay()]}, ${monthNames[currentDate.getMonth()]} ${ordinalNumbers[currentDate.getDate() - 1]}.`;
+}
+
+// SK I2 - Greets the user in a random way
+function randomGreeting() {
+   const greetingResponses = ['Hey, what\'s up?', 'How\'s it going?', 'Good to hear your voice.', 'Hello!', 'What can I do for you today?'];
+   return greetingResponses[Math.floor(Math.random() * greetingResponses.length)];
+}
+
+// SK I3 - Says a random joke
+function randomJoke() {
+
+   const jokeSetups = ['What\'s the best thing about Switzerland?', 'Did you hear about the mathematician who\'s afraid of negative numbers?', 'Why do we tell actors to break a leg?', 'Did you hear about the claustrophobic astronaut?']
+   const jokePunchlines = ['I don\'t know, but the flag is a big plus.', 'He\'ll stop at nothing to avoid them.', 'Because every play has a cast.', 'He just needed a little space.']
+
+   let randomNum = Math.floor(Math.random() * jokeSetups.length);
+
+   let setup = jokeSetups[randomNum]
+   let punchline = jokePunchlines[randomNum]
+
+   return [setup, punchline];
+}
+
+// SK I4 - Plays a song chosen by the user
 function playSong(path, title, artist) {
+   
    wave = new CircularAudioWave(document.getElementById('samantha-visual'));
    wave.loadAudio(path);
    setTimeout(() => {
       wave.play();
    }, 4000);
+
    return `Playing ${title} by ${artist}`;
 }
+
+
+// -------------------
+// FUN SKILL FUNCTIONS
+// -------------------
+
+// SK 001 - Are You Stupid?
+function areYouStupid() {
+   const stupidResponses = ['Yes, they are very stupid', 'No, they are actually pretty smart', 'Uhh, obviously', 'No, definitely not', 'You make Porter look smart'];
+   return stupidResponses[Math.floor(Math.random() * stupidResponses.length)];
+}
+
+// SK 002 - Motivational Quote of the Day
+function randomQuote() {
+
+   const quotes = ['The Best Way To Get Started Is To Quit Talking And Begin Doing.', 'The Pessimist Sees Difficulty In Every Opportunity. The Optimist Sees Opportunity In Every Difficulty.', 'It’s Not Whether You Get Knocked Down, It’s Whether You Get Up.', 'If You Are Working On Something That You Really Care About, You Don’t Have To Be Pushed. The Vision Pulls You.']
+   const authors = ['Walt Disney', 'Winston Churchill', 'Vince Lombardi', 'Steve Jobs']
+   
+   let randomNum = Math.floor(Math.random() * quotes.length)
+   let dailyQuote = quotes[randomNum];
+   let quoteAuthor = authors[randomNum];
+
+   return [dailyQuote, quoteAuthor];
+}
+
+
+// ------------
+// PROCESS TEXT
+// ------------
 
 function process(rawText) {
    // remove space and lowercase text
    let text = rawText.replace(/\s/g, "");
    text = text.toLowerCase();
    let response = null;
-
+   // stop listening
    toggleBtn();
+
+   // TEXT PROCESSING
+   const greetingInputs = ['hi', 'whassup', 'whatsup', 'what\'sup', 'hello'];
+
+   for (let i = 0; i < greetingInputs.length; i++) {
+      if (text.includes(greetingInputs[i])) {
+         response = randomGreeting();
+      }
+   }
+
+   if (text.includes('aboutyou')) {
+      response = 'I am an artificial intelligence created by Tanner Kopel that can do simple tasks like play music and tell jokes';
+   }
+
+   if (text.includes('joke')) {
+      response = randomJoke();
+   }
+
+   if (text.includes('quote')) {
+      response = randomQuote();
+   }
+
+   if (text.includes('stupid')) {
+      response = areYouStupid();
+   }
 
    if (text.includes('play')) {
       if (text.includes('montero') || text.includes('callmebyyourname')) {
@@ -78,9 +200,61 @@ function process(rawText) {
          response = playSong('audio/imSoSorry.mp3', 'I\'m So Sorry', 'Imagine Dragons');
       }
 
+      else if (text.includes('buttercup')) {
+         response = playSong('audio/buildMeUpButtercup.mp3', 'Build Me Up Buttercup', 'The Foundations');
+      }
+
+      else if (text.includes('crazy')) {
+         response = playSong('audio/crazy.mp3', 'Crazy', 'Gnarls Barkley');
+      }
+
+      else if (text.includes('dreamon')) {
+         response = playSong('audio/dreamOn.mp3', 'Dream On', 'Aerosmith');
+      }
+
+      else if (text.includes('fatherofall')) {
+         response = playSong('audio/fatherOfAll.mp3', 'Father of All', 'Green Day');
+      }
+
+      else if (text.includes('firereadyaim')) {
+         response = playSong('audio/fireReadyAim.mp3', 'Fire Ready Aim', 'Green Day');
+      }
+
+      else if (text.includes('fooledaround')) {
+         response = playSong('audio/fooledAroundAndFellInLove.mp3', 'Fooled Around and Fell In Love', 'Elvin Bishop');
+      }
+
+      else if (text.includes('ghosttown')) {
+         response = playSong('audio/ghostTown.mp3', 'Ghost Town', 'Kanye West');
+      }
+
+      else if (text.includes('glorious')) {
+         response = playSong('audio/glorious.mp3', 'Glorious', 'Macklemore');
+      }
+
+      else if (text.includes('levitating')) {
+         response = playSong('audio/levitating.mp3', 'Levitating', 'Dua Lipa and Da Baby');
+      }
+
+      else if (text.includes('saveyourtears')) {
+         response = playSong('audio/saveYourTears.mp3', 'Save Your Tears', 'The Weekend');
+      }
+
+      else if (text.includes('timber')) {
+         response = playSong('audio/timber.mp3', 'Timber', 'Pitbull and Kesha');
+      }
+
+      else if (text.includes('touchthesky')) {
+         response = playSong('audio/touchTheSky.mp3', 'Touch The Sky', 'Kanye West');
+      }
+
       else {
          response = 'I could not find the song you were looking for';
       }
+   }
+
+   if ((text.includes('today') && text.includes('day')) || text.includes('date')) {
+      response = getDate();
    }
 
    if (text.includes('pause') || text.includes('stopmusic')) {
@@ -97,8 +271,33 @@ function process(rawText) {
       response = 'I found some information for ' + rawText.replace("search", "");
    }
 
-   if (text.includes('.nevermind')) {
+   if (text.includes('nevermind')) {
       response = 'Ok, let me know if you need anything';
+   }
+
+   if (text.includes('funny')) {
+      response = 'Thanks, I\'m a pretty funny guy';
+   }
+
+   if (text.includes('howareyou')) {
+      response = 'I\'m doing pretty good, thanks for asking';
+   }
+
+   if (text.includes('sad')) {
+      response = 'Do you want to talk about it? It can be good to get your feelings out. I can stop recording if you\'d like.';
+   }
+
+   if (text.includes('badjoke')) {
+      response = 'If you wanted better, you should have asked Alexa';
+   }
+
+   if (text.includes('thanks') || text.includes('thankyou')) {
+      response = 'No problem, I\'m always happy to help';
+   }
+
+   if (text.includes('shutdown')) {
+      response = 'Shutting down';
+      alwaysListening = false;
    }
 
    if (!response) {
@@ -107,6 +306,11 @@ function process(rawText) {
 
    return response;
 }
+
+
+// ----------------
+// UI FUNCTIONALITY
+// ----------------
 
 // EMERGENCY STOP BUTTON
 
